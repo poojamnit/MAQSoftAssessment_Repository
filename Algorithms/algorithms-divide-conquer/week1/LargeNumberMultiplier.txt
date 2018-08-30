@@ -1,0 +1,61 @@
+import java.math.BigInteger;
+import java.util.Scanner;
+public class LargeNumberMultiplier {
+	
+
+
+    public BigInteger multiplier(BigInteger x, BigInteger y)
+    {
+        BigInteger dig1 = findSize(x);
+        BigInteger dig2 = findSize(y);
+        BigInteger maxNum = dig1.max(dig2);       
+        if (maxNum.intValue() < 100)
+            return x.multiply(y); 
+        maxNum = maxNum.divide(new BigInteger("2")).add(maxNum.remainder(new BigInteger("2")));            
+        long myPow = (long)Math.pow(10, maxNum.doubleValue());       
+        BigInteger b = x.divide(new BigInteger("myPow"));
+        BigInteger a = x.subtract(b.multiply(new BigInteger("myPow")));
+        BigInteger d = y.divide(new BigInteger("myPow"));
+        BigInteger c = y.subtract((d.multiply(maxNum)));
+        BigInteger a0 = multiplier(a, c);
+        BigInteger a1 = multiplier(a.add(b), c.add(d));
+        BigInteger a2 = multiplier(b, d);  
+        BigInteger a3 = (a1.subtract(a0.add(a2))).multiply(new BigInteger("myPow"));
+        long temp = (long)(Math.pow(10, 2 * maxNum.doubleValue()));
+        BigInteger a4 = a2.multiply(new BigInteger("temp"));
+ 
+
+        return (a0.add(a3)).add(a4);     
+    }
+    public BigInteger findSize(BigInteger num)
+    {
+        BigInteger inc = BigInteger.ZERO;
+        while (!num.equals(BigInteger.ZERO))
+        {
+        	inc=inc.add(BigInteger.ONE);
+            num = num.divide(new BigInteger("10"));
+        }
+        return inc;
+    }
+    public static void main (String[] args) 
+    {
+        Scanner scan = null;
+    	try
+    	{
+         scan = new Scanner(System.in);
+        LargeNumberMultiplier mymulti = new LargeNumberMultiplier();
+        System.out.println("Enter 1st integer number \n");
+        BigInteger num1 = scan.nextBigInteger();
+        System.out.println("\n");
+        System.out.println("Enter 2nd integer number \n");
+        BigInteger num2 = scan.nextBigInteger();
+        System.out.println("\n");
+        BigInteger result = mymulti.multiplier(num1, num2);
+        System.out.println("\n Final Result : "+ result);
+    	}
+    	catch(Exception e)
+    	{
+    		scan.close();
+
+    }
+}
